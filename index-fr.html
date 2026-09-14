@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Iberdrola — Est-elle surévaluée ?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root{--ink:#10231D;--soft:#3B554C;--paper:#F6F5F0;--white:#fff;--green:#00A65A;--teal:#14594A;
+--sand:#E4E0D4;--sand2:#EFEDE4;--amber:#B8781A;--rose:#9E2B2B;--nav:64px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;
+font-size:16px;line-height:1.65;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:700;line-height:1.12;margin:0}
+h1{font-size:clamp(2.3rem,5vw,3.8rem);letter-spacing:-.02em}
+h2{font-size:clamp(1.55rem,2.8vw,2.1rem);margin-bottom:.5rem}
+h3{font-size:1.15rem;font-weight:500;margin-bottom:.45rem}
+p{margin:0 0 1rem}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+.prose{max-width:68ch}
+nav{position:sticky;top:0;z-index:50;background:var(--ink);height:var(--nav);display:flex;align-items:center}
+nav .wrap{display:flex;align-items:center;gap:2rem;width:100%}
+.brand{font-family:"Fraunces",serif;font-weight:700;color:var(--paper);font-size:1.1rem;white-space:nowrap}
+.brand span{color:var(--green)}
+.navtabs{display:flex;gap:.2rem;overflow-x:auto;scrollbar-width:none}
+.navtabs::-webkit-scrollbar{display:none}
+.navtab{background:none;border:0;color:#9FB5AC;font:inherit;font-size:.9rem;padding:.5rem .85rem;
+cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent}
+.navtab:hover{color:var(--paper)}
+.navtab.on{color:var(--paper);border-bottom-color:var(--green)}
+.navtab:focus-visible,.tab:focus-visible,.acc-h:focus-visible,summary:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+.page{display:none;padding:52px 0 96px}
+.page.on{display:block}
+.hero{background:var(--ink);color:var(--paper);padding:60px 0 48px}
+.hero .kicker{color:var(--green);font-size:.86rem;margin-bottom:1rem}
+.hero h1{color:var(--paper);max-width:16ch}
+.hero .answer{color:#DCE8E3;max-width:56ch;margin-top:1.3rem;font-size:1.12rem}
+.badge{display:inline-block;margin-top:1.5rem;padding:.5rem 1rem;border:1px solid var(--green);color:var(--green);font-size:.93rem}
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1px;background:var(--sand);
+border-bottom:1px solid var(--sand)}
+.stat{background:var(--paper);padding:1.15rem 1.2rem}
+.stat .v{font-family:"Fraunces",serif;font-size:1.7rem;font-weight:700;line-height:1.1}
+.stat .l{font-size:.8rem;color:var(--soft);margin-top:.25rem}
+section{padding:46px 0 0}
+.lead{color:var(--soft);max-width:70ch;margin-bottom:1.5rem}
+.panel{background:var(--white);border:1px solid var(--sand);padding:24px;margin:18px 0}
+.chart{position:relative;height:330px}
+.chart.tall{height:390px}
+.chart.sm{height:265px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+@media(max-width:860px){.grid2,.grid3{grid-template-columns:1fr}}
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+th,td{padding:.52rem .6rem;text-align:right;border-bottom:1px solid var(--sand);white-space:nowrap}
+th:first-child,td:first-child{text-align:left;white-space:normal}
+td.txt,th.txt{white-space:normal}
+thead th{background:var(--ink);color:var(--paper);font-weight:500;font-size:.82rem;border:0}
+tbody tr:hover{background:var(--sand2)}
+tr.tot td{font-weight:600;border-top:2px solid var(--ink);border-bottom:0}
+td.pos{color:var(--teal)}td.neg{color:var(--rose)}
+td.txt,th.txt{text-align:left}
+.tscroll{overflow-x:auto}
+.tabs{display:flex;border-bottom:2px solid var(--sand);margin-top:8px;overflow-x:auto}
+.tab{background:none;border:0;border-bottom:2px solid transparent;margin-bottom:-2px;font:inherit;
+font-size:.95rem;color:var(--soft);padding:.7rem 1.1rem;cursor:pointer;white-space:nowrap}
+.tab:hover{color:var(--ink)}
+.tab.on{color:var(--ink);border-bottom-color:var(--green);font-weight:600}
+.tabpane{display:none;padding-top:22px}
+.tabpane.on{display:block}
+.acc{border:1px solid var(--sand);background:var(--white);margin-bottom:10px}
+.acc-h{width:100%;background:none;border:0;font:inherit;font-size:1rem;font-weight:500;padding:.95rem 1.1rem;
+display:flex;justify-content:space-between;cursor:pointer;text-align:left}
+.acc-h:hover{background:var(--sand2)}
+.acc-h .chev{color:var(--green);transition:transform .18s}
+.acc.open .chev{transform:rotate(90deg)}
+.acc-b{display:none;padding:0 1.1rem 1.1rem}
+.acc.open .acc-b{display:block}
+details.why{border-left:3px solid var(--green);background:var(--sand2);padding:.85rem 1.1rem;margin:20px 0}
+details.why summary{cursor:pointer;font-weight:500;list-style:none}
+details.why summary::-webkit-details-marker{display:none}
+details.why summary::before{content:"+ ";color:var(--green);font-weight:700}
+details.why[open] summary::before{content:"– "}
+details.why .prose{margin-top:.85rem;font-size:.93rem}
+.note{border-left:3px solid var(--amber);background:#FBF6EC;padding:.9rem 1.1rem;margin:18px 0;font-size:.93rem}
+.key{border-left:3px solid var(--teal);background:#EAF2EF;padding:.9rem 1.1rem;margin:18px 0;font-size:.95rem}
+.heat td{text-align:center;font-size:.82rem;padding:.38rem .3rem}
+.heat th{font-size:.78rem;text-align:center}
+.heat .rowh{background:var(--ink);color:var(--paper);text-align:center;font-weight:500}
+.heat .mid{outline:2px solid var(--ink);font-weight:700}
+.swot{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--sand);border:1px solid var(--sand)}
+@media(max-width:760px){.swot{grid-template-columns:1fr}}
+.sw{background:var(--white);padding:20px}
+.sw h3{font-family:"IBM Plex Sans",sans-serif;font-size:.82rem;font-weight:600;color:var(--soft);margin-bottom:.9rem}
+.sw.f{border-top:3px solid var(--green)}
+.sw.fa{border-top:3px solid var(--amber)}
+.sw.o{border-top:3px solid var(--teal)}
+.sw.m{border-top:3px solid var(--rose)}
+ul.tight{margin:0;padding-left:1.15rem}
+ul.tight li{margin-bottom:.5rem}
+footer{background:var(--ink);color:#9FB5AC;padding:34px 0 22px;font-size:.84rem;margin-top:44px}
+.sig{text-align:right;font-size:.72rem;letter-spacing:.14em;color:#7C9289;margin-top:22px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <div class="brand">Iberdrola<span>.</span></div>
+  <div class="navtabs">
+    <button class="navtab on" data-p="synthese">Synthèse</button>
+    <button class="navtab" data-p="valo">Valorisation</button>
+    <button class="navtab" data-p="etats">États financiers</button>
+    <button class="navtab" data-p="societe">Société</button>
+    <button class="navtab" data-p="secteur">Secteur</button>
+  </div>
+</div></nav>
+
+<!-- ============ SYNTHESE ============ -->
+<div class="page on" id="synthese">
+
+  <div class="hero"><div class="wrap">
+    <div class="kicker">Valorisation au 31 décembre 2025</div>
+    <h1>Iberdrola est-elle surévaluée ?</h1>
+    <p class="answer">Un peu. Ses flux futurs et ses actifs justifient son cours. Ses concurrents européens, non.</p>
+    <div class="badge">Moyenne des trois méthodes : 16,27 € contre 18,46 € en bourse, soit 12 % de surévaluation</div>
+  </div></div>
+
+  <div class="strip">
+    <div class="stat"><div class="v">18,46 €</div><div class="l">Cours de l'action au 31.12.2025</div></div>
+    <div class="stat"><div class="v">16,27 €</div><div class="l">Valeur moyenne estimée</div></div>
+    <div class="stat"><div class="v">121,7 Md€</div><div class="l">Valeur boursière de la société</div></div>
+    <div class="stat"><div class="v">15 956 M€</div><div class="l">Bénéfice d'exploitation 2025</div></div>
+    <div class="stat"><div class="v">3,20x</div><div class="l">Dette nette rapportée à ce bénéfice</div></div>
+  </div>
+
+  <div class="wrap">
+
+    <section>
+      <h2>Football field</h2>
+      <p class="lead">Chaque barre est la fourchette de valeur obtenue par une méthode. La ligne noire est le cours de bourse au 31 décembre 2025, la ligne verte la moyenne des trois méthodes.</p>
+      <div class="panel"><div class="chart tall"><canvas id="ff"></canvas></div></div>
+
+      <div class="grid3">
+        <div class="panel">
+          <h3>Ce que valent ses flux futurs</h3>
+          <p class="prose" style="font-size:.93rem">On estime l'argent que la société va générer dans les prochaines années, puis on ramène ce futur à sa valeur d'aujourd'hui. Résultat : <strong>16,9 à 20,0 €</strong>. Le cours tombe au milieu.</p>
+        </div>
+        <div class="panel">
+          <h3>Somme des parties (SOTP)</h3>
+          <p class="prose" style="font-size:.93rem">On valorise séparément les réseaux électriques et les centrales, au prix que des acheteurs ont réellement payé pour des actifs comparables. Résultat : <strong>16,3 à 18,8 €</strong>. Le cours est dans le haut.</p>
+        </div>
+        <div class="panel">
+          <h3>Ce que paient ses concurrents</h3>
+          <p class="prose" style="font-size:.93rem">On applique à Iberdrola les mêmes ratios que ceux auxquels se négocient Enel, Engie et RWE. Résultat : <strong>8,5 à 17,1 €</strong>. Le cours est nettement au-dessus.</p>
+        </div>
+      </div>
+
+      <div class="key">
+        <strong>La conclusion.</strong> Deux méthodes sur trois disent que le prix est justifié. La troisième dit qu'Iberdrola est payée bien plus cher que ses concurrents. Les deux sont vraies en même temps : le marché accepte cette prime parce qu'une part croissante des revenus d'Iberdrola est garantie par des régulateurs publics, au lieu de dépendre du prix de l'électricité.
+      </div>
+    </section>
+
+    <section>
+      <h2>Surévaluée ou sous-évaluée ?</h2>
+      <p class="lead">La réponse dépend de ce à quoi on la compare.</p>
+      <div class="tscroll">
+      <table>
+        <thead><tr><th>Méthode</th><th>Fourchette</th><th>Milieu</th><th>Écart au cours</th><th class="txt">Ce que ça veut dire</th></tr></thead>
+        <tbody>
+          <tr><td>Flux futurs actualisés</td><td>16,91 – 20,03 €</td><td>18,47 €</td><td class="pos">+0,1 %</td><td class="txt">Le prix correspond à ce que la société devrait rapporter</td></tr>
+          <tr><td>Somme des parties (SOTP)</td><td>16,28 – 18,79 €</td><td>17,54 €</td><td class="pos">−5,0 %</td><td class="txt">Le prix correspond à ce que ses actifs se vendent</td></tr>
+          <tr><td>Comparables boursiers</td><td>8,48 – 17,11 €</td><td>12,80 €</td><td class="neg">−30,7 %</td><td class="txt">Elle est payée bien plus cher que ses pairs européens</td></tr>
+          <tr class="tot"><td>Moyenne des trois</td><td></td><td>16,27 €</td><td class="neg">−11,9 %</td><td class="txt">Chaque méthode compte pour un tiers</td></tr>
+          <tr class="tot"><td>Cours de bourse</td><td></td><td>18,46 €</td><td>—</td><td class="txt">Le prix réellement payé fin 2025</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="note">
+        <strong>La limite à connaître.</strong> 92,1 % du résultat de la première méthode dépend d'hypothèses portant sur l'après-2029, que personne ne peut vérifier. Selon les hypothèses retenues, elle donne entre 9 € et 33 €. Elle encadre, elle ne tranche pas. C'est pourquoi elle n'est pas la méthode principale ici.
+      </div>
+    </section>
+
+    <section>
+      <h2>La société est-elle en bonne santé ?</h2>
+      <div class="tscroll">
+      <table>
+        <thead><tr><th>Indicateur</th><th>2025</th><th class="txt">Ce que ça mesure</th><th class="txt">Lecture</th></tr></thead>
+        <tbody>
+          <tr><td>Dette nette / bénéfice d'exploitation</td><td>3,20x</td><td class="txt">Combien d'années de bénéfice il faudrait pour rembourser la dette</td><td class="txt">Dans la moyenne du secteur, et stable depuis cinq ans</td></tr>
+          <tr><td>Coût moyen de la dette</td><td>4,76 %</td><td class="txt">Le taux d'intérêt que la société paie</td><td class="txt">En baisse, contre 5,02 % en 2024</td></tr>
+          <tr><td>Bénéfice transformé en argent réel</td><td>72,9 %</td><td class="txt">La part du bénéfice comptable qui arrive vraiment en caisse</td><td class="txt">Correct, entre 67 % et 84 % sur cinq ans</td></tr>
+          <tr><td>Investissements / bénéfice</td><td>62,5 %</td><td class="txt">La part du bénéfice réinvestie dans de nouveaux équipements</td><td class="txt">Très élevé : il ne reste que 1,7 Md€ de libre</td></tr>
+          <tr><td>Croissance du dividende sur cinq ans</td><td>+62 %</td><td class="txt">Ce que la société reverse à ses actionnaires</td><td class="txt">Hausse régulière, plancher garanti jusqu'en 2028</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<!-- ============ VALORISATION ============ -->
+<div class="page" id="valo">
+  <div class="wrap">
+    <h2>Valorisation</h2>
+    <p class="lead">Trois méthodes, construites sur les comptes clos au 31 décembre 2025, hors activités cédées. Chaque onglet se termine par une explication de la méthode et de ses limites.</p>
+
+    <div class="tabs">
+      <button class="tab on" data-t="t-dcf">Flux futurs (DCF)</button>
+      <button class="tab" data-t="t-rab">Somme des parties (SOTP)</button>
+      <button class="tab" data-t="t-comp">Comparables boursiers</button>
+    </div>
+
+    <!-- DCF -->
+    <div class="tabpane on" id="t-dcf">
+      <p class="prose">Le principe : estimer l'argent que la société va générer chaque année, puis ramener ces montants futurs à leur valeur d'aujourd'hui. Un euro dans cinq ans vaut moins qu'un euro aujourd'hui, et le taux qui sert à faire cette conversion s'appelle le coût du capital.</p>
+
+      <h3 style="margin-top:28px">Le taux de conversion retenu : 5,82 %</h3>
+      <div class="tscroll">
+      <table>
+        <thead><tr><th>Composante</th><th>Valeur</th><th class="txt">D'où elle vient</th></tr></thead>
+        <tbody>
+          <tr><td>Taux sans risque</td><td>3,51 %</td><td class="txt">Rendement de l'emprunt d'État allemand à 10 ans</td></tr>
+          <tr><td>Sensibilité au marché (bêta)</td><td>0,644</td><td class="txt">Moyenne du secteur, réajustée au niveau d'endettement d'Iberdrola</td></tr>
+          <tr><td>Prime de risque actions</td><td>5,05 %</td><td class="txt">Supplément exigé pour détenir des actions, pondéré par les pays où se trouvent les actifs</td></tr>
+          <tr><td>Rendement exigé par les actionnaires</td><td>6,76 %</td><td class="txt">Calculé à partir des trois lignes ci-dessus</td></tr>
+          <tr><td>Coût de la dette après impôt</td><td>3,57 %</td><td class="txt">4,76 % publié par la société, diminué de l'économie d'impôt</td></tr>
+          <tr class="tot"><td>Coût du capital</td><td>5,82 %</td><td class="txt">Moyenne des deux, pondérée 70 % actions et 30 % dette</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="key">
+        <strong>Pourquoi le Bund allemand et non le Bono espagnol.</strong> Le taux sans risque est le taux du meilleur emprunteur de la zone euro, et c'est l'Allemagne. Le risque pays n'est pas oublié pour autant : il est logé dans la prime de risque actions, pondérée par la localisation réelle des actifs. La prime espagnole de 5,78 % contient 1,55 point de risque souverain au-dessus de la prime de marché mature. Retenir le Bono, qui contient déjà ce risque, l'aurait compté deux fois. Et l'Espagne ne représente que 23,5 % des actifs du groupe.
+      </div>
+
+      <h3 style="margin-top:32px">Le modèle</h3>
+      <p class="prose">Trois années reprennent les objectifs publiés par la société. La quatrième est une année de croisière : on suppose qu'elle cesse d'agrandir son parc pour se contenter de l'entretenir, et qu'elle croît au rythme de l'inflation. Cette année sert de base pour estimer tout ce qui vient après.</p>
+      <div class="tscroll">
+      <table>
+        <thead><tr><th>M€</th><th>2025</th><th>2026</th><th>2027</th><th>2028</th><th>2029 croisière</th></tr></thead>
+        <tbody>
+          <tr><td>Bénéfice d'exploitation</td><td>15 956</td><td>16 610</td><td>17 291</td><td>18 000</td><td>18 360</td></tr>
+          <tr><td>Croissance</td><td>—</td><td>4,1 %</td><td>4,1 %</td><td>4,1 %</td><td>2,0 %</td></tr>
+          <tr><td>Investissements rapportés aux amortissements</td><td>1,72x</td><td>1,65x</td><td>1,58x</td><td>1,51x</td><td>1,00x</td></tr>
+          <tr class="tot"><td>Argent disponible après investissements</td><td>—</td><td>2 565</td><td>3 110</td><td>3 697</td><td>7 987</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="panel"><div class="chart"><canvas id="dcfc"></canvas></div></div>
+
+      <h3 style="margin-top:32px">Du flux à la valeur par action</h3>
+      <div class="tscroll">
+      <table>
+        <thead><tr><th>M€</th><th>Montant</th><th class="txt">Ce que c'est</th></tr></thead>
+        <tbody>
+          <tr><td>Flux 2026 à 2029, ramenés à aujourd'hui</td><td>14 690</td><td class="txt">Les quatre années que l'on projette explicitement</td></tr>
+          <tr><td>Valeur terminale</td><td>213 373</td><td class="txt">Tout ce que la société génère après 2029, capitalisé en une fois</td></tr>
+          <tr><td>Valeur terminale ramenée à aujourd'hui</td><td>170 116</td><td class="txt">La même, actualisée sur quatre ans</td></tr>
+          <tr class="tot"><td>Valeur totale de la société</td><td>184 806</td><td class="txt">Somme des deux lignes actualisées</td></tr>
+          <tr><td>Poids de la valeur terminale</td><td>92,1 %</td><td class="txt">La part du résultat qui vient de l'après-2029</td></tr>
+          <tr><td>Multiple de bénéfice implicite de la valeur terminale</td><td>11,62x</td><td class="txt">Contrôle : proche des 10,4x auxquels le titre se traite</td></tr>
+          <tr><td>Moins la dette nette</td><td>−51 029</td><td class="txt">Un acheteur reprendrait la dette</td></tr>
+          <tr><td>Moins la part des actionnaires minoritaires</td><td>−13 351</td><td class="txt">Part des filiales qu'Iberdrola ne détient pas à 100 %</td></tr>
+          <tr class="tot"><td>Valeur revenant aux actionnaires</td><td>120 426</td><td class="txt"></td></tr>
+          <tr><td>Nombre d'actions en circulation</td><td>6 598 millions</td><td class="txt">Actions émises moins actions propres</td></tr>
+          <tr class="tot"><td>Valeur par action</td><td>18,25 €</td><td class="txt">Contre 18,46 € en bourse, soit −1,1 %</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <p class="prose" style="font-size:.9rem;color:var(--soft);margin-top:.6rem">Contrôle par une autre voie : en supposant la société revendue en 2029 à 12 fois son bénéfice au lieu d'appliquer la formule, on obtient 19,10 € au lieu de 18,25 €, soit 3,3 % d'écart. Ce multiple de 12 fois implique une croissance de long terme de 2,12 %, contre 2,00 % retenus par raisonnement.</p>
+
+      <h3 style="margin-top:32px">Ce que change chaque hypothèse</h3>
+      <p class="prose">Les lignes font varier le coût du capital, les colonnes la croissance de long terme. La cellule encadrée est le scénario retenu.</p>
+      <div class="tscroll"><div id="heat"></div></div>
+      <p class="prose" style="font-size:.88rem;color:var(--soft);margin-top:.7rem">La ligne 5,83 % est arrondie. Au taux exact retenu, 5,829 %, la valeur centrale ressort à 18,25 € et non 18,17 €.</p>
+
+      <details class="why">
+        <summary>Pourquoi cette méthode ne suffit pas ici</summary>
+        <div class="prose">
+          <p>Iberdrola réinvestit 62,5 % de son bénéfice d'exploitation dans de nouvelles infrastructures. Il ne lui reste donc que 1 664 M€ d'argent réellement libre en 2025, sur 15 956 M€ de bénéfice. Les quatre années que l'on projette pèsent peu.</p>
+          <p>Conséquence mécanique : 92,1 % du résultat vient de ce qu'on suppose après 2029. Or cette partie ne dépend que de deux chiffres invérifiables, le coût du capital et la croissance de long terme. Comme ils sont proches l'un de l'autre, un écart de 0,5 point sur l'un déplace le résultat de 13 %.</p>
+          <p>Une version plus longue du modèle, sur dix ans, ramenait cette part à 76 %. Mais les six années supplémentaires étaient obtenues par simple interpolation entre les objectifs publiés et l'hypothèse finale, sans aucune information réelle derrière. Les 92,1 % sont la mesure honnête du poids de l'hypothèse.</p>
+          <p>Sur l'année de croisière : les investissements y sont ramenés au niveau des amortissements, c'est-à-dire qu'on suppose que la société entretient son parc sans l'agrandir. C'est la condition d'application de la formule utilisée ensuite. L'appliquer à une année où la société investit encore 1,5 fois ses amortissements reviendrait à soustraire indéfiniment une dépense de croissance sans jamais en compter le bénéfice.</p>
+        </div>
+      </details>
+    </div>
+
+    <!-- VALEUR DES ACTIFS -->
+    <div class="tabpane" id="t-rab">
+      <p class="prose">La somme des parties, ou <em>sum of the parts</em> en anglais, consiste à valoriser séparément chaque métier, au prix auquel des actifs comparables se sont réellement vendus. Puis additionner, et retirer les dettes.</p>
+
+      <h3 style="margin-top:28px">Deux prix de référence, tous deux observés</h3>
+      <div class="grid2">
+        <div class="panel">
+          <h3>Pour les réseaux : 1,45x</h3>
+          <p class="prose" style="font-size:.93rem">En août 2024, Iberdrola a racheté Electricity North West, un réseau de distribution du nord-ouest de l'Angleterre. Valeur d'entreprise pour 100 % de la société : 4,2 Md£. Valeur de ses actifs reconnue par le régulateur : 2,9 Md£. Iberdrola a donc payé 1,45 fois cette valeur, soit 45 % de prime.</p>
+        </div>
+        <div class="panel">
+          <h3>Pour les centrales : 18,0x</h3>
+          <p class="prose" style="font-size:.93rem">En décembre 2024, le fonds Brookfield a racheté Neoen, producteur français d'énergie renouvelable, pour environ 6,1 Md€. Cela représentait 18 fois son bénéfice d'exploitation annuel.</p>
+        </div>
+      </div>
+
+      <h3 style="margin-top:28px">Comment lire un multiple</h3>
+      <div class="key">
+        Payer « 6 fois » signifie : j'achète une activité qui gagne 100 € par an, je la paie 600 €. Il me faudra six ans de bénéfice pour récupérer ma mise. Attention, les quatre lignes ci-dessous ne multiplient pas toutes la même chose : trois portent sur un bénéfice annuel, une porte sur la valeur des actifs.
+      </div>
+
+      <h3 style="margin-top:28px">Application à Iberdrola</h3>
+      <div class="tscroll">
+      <table>
+        <thead><tr><th>Métier</th><th class="txt">Ce que l'on multiplie</th><th>Montant 2025</th><th>Multiple</th><th>Valeur</th></tr></thead>
+        <tbody>
+          <tr><td>Réseaux électriques</td><td class="txt">La valeur des actifs reconnue par le régulateur</td><td>51 000</td><td>× 1,45</td><td>73 862</td></tr>
+          <tr><td>Renouvelables et production</td><td class="txt">Le bénéfice d'exploitation d'une année</td><td>5 511</td><td>× 18,00</td><td>99 198</td></tr>
+          <tr><td>Vente aux clients</td><td class="txt">Le bénéfice d'exploitation d'une année</td><td>2 799</td><td>× 6,00</td><td>16 794</td></tr>
+          <tr><td>Structure et coûts du siège</td><td class="txt">Le bénéfice d'exploitation, ici négatif</td><td>−253</td><td>× 6,00</td><td>−1 518</td></tr>
+          <tr class="tot"><td>Valeur totale de la société</td><td class="txt"></td><td></td><td></td><td>188 336</td></tr>
+          <tr><td>Moins la dette nette</td><td class="txt">Un acheteur reprendrait la dette</td><td></td><td></td><td>−51 029</td></tr>
+          <tr><td>Moins la part des actionnaires minoritaires</td><td class="txt">Part des filiales, surtout brésiliennes, qu'Iberdrola ne détient pas à 100 %</td><td></td><td></td><td>−13 351</td></tr>
+          <tr class="tot"><td>Valeur revenant aux actionnaires</td><td class="txt"></td><td></td><td></td><td>123 956</td></tr>
+          <tr><td>Divisée par le nombre d'actions</td><td class="txt">Actions émises moins actions propres</td><td></td><td></td><td>6 598 millions</td></tr>
+          <tr class="tot"><td>Valeur par action</td><td class="txt">Contre 18,46 € en bourse, soit +1,8 %</td><td></td><td></td><td>18,79 €</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <details class="why">
+        <summary>Pourquoi les réseaux se valorisent sur leurs actifs et pas sur leur bénéfice</summary>
+        <div class="prose">
+          <p>Un réseau électrique est un monopole : personne ne construit deux réseaux concurrents dans la même rue. Un régulateur public fixe donc combien l'opérateur a le droit de gagner, avec une règle simple : revenus autorisés = valeur des actifs reconnue par le régulateur, multipliée par un taux de rendement qu'il décide, plus les amortissements et les charges.</p>
+          <p>Le bénéfice d'un réseau n'est donc pas une donnée indépendante : il découle mécaniquement de la valeur de ses actifs. Multiplier l'un ou l'autre revient au même, et tout le secteur raisonne sur les actifs. Iberdrola publie elle-même ce chiffre pays par pays, et c'est sur cette base qu'elle a acheté Electricity North West.</p>
+          <p>Payer 1,45 fois signifie : j'achète 100 € d'actifs reconnus par le régulateur, je les paie 145 €. Les 45 % supplémentaires se justifient si l'acheteur pense faire mieux que le rendement autorisé grâce à des économies, si le parc d'actifs va grossir, ou s'il attend des synergies avec un réseau qu'il possède déjà. Iberdrola détenait déjà les deux réseaux voisins en Écosse.</p>
+          <p>En dessous de 1,00 fois, le marché douterait de la capacité de l'opérateur à tenir le rendement que le régulateur lui accorde.</p>
+        </div>
+      </details>
+
+      <details class="why">
+        <summary>Quels multiples sont observés, lesquels sont des hypothèses</summary>
+        <div class="prose">
+          <p>Deux des quatre multiples sont des prix réellement payés dans des transactions : 1,45 fois les actifs régulés pour Electricity North West, et 18 fois le bénéfice pour Neoen. Ils ne se discutent pas, ils se constatent.</p>
+          <p>Les deux autres, 6 fois sur la vente aux clients et 6 fois sur les coûts de structure, sont des hypothèses. La vente aux clients est une activité sans usines, très concurrentielle et à faibles marges : elle ne vaut pas cher. Les coûts du siège sont valorisés au même multiple par cohérence.</p>
+          <p>Ces deux lignes pèsent 15 276 M€ sur 188 336, soit 8 % du total. Même en doublant leur multiple, la valeur par action bouge de moins d'un euro. Le résultat repose donc essentiellement sur des prix observés, pas sur des choix.</p>
+        </div>
+      </details>
+
+      <h3 style="margin-top:32px">Le contrôle le plus convaincant du dossier</h3>
+      <p class="prose">On inverse le raisonnement. On part du prix payé en bourse, on retire la valeur des centrales au multiple de Neoen et celle de la vente aux clients, et on regarde ce qu'il reste pour les réseaux.</p>
+      <div class="panel">
+        <p class="prose" style="margin-bottom:.4rem">Le marché valorise implicitement les réseaux d'Iberdrola à <strong>1,40 fois</strong> leurs actifs régulés.</p>
+        <p class="prose" style="margin-bottom:0;color:var(--soft)">Iberdrola a payé <strong>1,45 fois</strong> pour Electricity North West. Deux chemins totalement indépendants, un écart de 3 %.</p>
+      </div>
+      <div class="key">
+        Autrement dit : le prix de bourse d'Iberdrola fin 2025 correspond à ce que coûteraient ses actifs si on les rachetait un par un, aux prix payés dans de vraies transactions. C'est le contrôle le plus solide de l'ensemble du travail.
+      </div>
+
+      <div class="note">
+        <strong>La sensibilité au multiple des centrales.</strong> C'est l'hypothèse la plus lourde de la méthode. Le tableau ci-dessous montre ce que devient la valeur par action selon le multiple retenu sur les renouvelables, tout le reste étant inchangé.
+        <table style="margin-top:.8rem">
+          <thead><tr><th>Multiple appliqué aux renouvelables</th><th>Valeur par action</th><th class="txt">Ce que ce multiple représente</th></tr></thead>
+          <tbody>
+            <tr><td>8,45x</td><td>10,81 €</td><td class="txt">Le ratio auquel RWE se négocie en bourse fin 2025</td></tr>
+            <tr><td>15,00x</td><td>16,28 €</td><td class="txt">Point médian entre le prix de bourse et le prix de rachat</td></tr>
+            <tr class="tot"><td>18,00x, retenu</td><td>18,79 €</td><td class="txt">Le prix payé par Brookfield pour Neoen en décembre 2024</td></tr>
+          </tbody>
+        </table>
+        <p style="margin:.8rem 0 0">La barre de cette méthode dans le football field va donc de 16,28 € à 18,79 €, soit un multiple compris entre 15x et 18x. L'écart entre un prix de bourse et un prix de rachat est normal : le second inclut une prime de contrôle. Le choix du 18x est assumé, parce qu'il rend la méthode cohérente avec celle des réseaux, elle aussi fondée sur une transaction.</p>
+      </div>
+
+      <div class="note">
+        <strong>La limite à connaître sur ce 18x.</strong> Deux réserves. D'abord, ce multiple a été calculé au moment de l'offre sur la prévision de bénéfice de Neoen pour 2024, qui était alors de 530 à 560 M€ ; Neoen l'a ensuite abaissée à 475-490 M€, si bien que sur le chiffre réalisé le multiple payé dépasse 20x. Ensuite, Neoen était un développeur en forte croissance, endetté à 8,5 fois son bénéfice, dont une grande partie de la valeur tenait à des projets non encore construits, absents du bénéfice. Les renouvelables d'Iberdrola sont un parc mûr de plus de 44 GW déjà en exploitation. Les deux ne sont pas strictement comparables, et le 18x est donc plutôt généreux.
+      </div>
+
+      <details class="why">
+        <summary>Ce que sont les actifs régulés, et pourquoi on ne calcule pas de flux futurs dessus</summary>
+        <div class="prose">
+          <p>Un réseau électrique est un monopole naturel : personne ne construit deux réseaux concurrents dans la même rue. Un régulateur public fixe donc combien l'opérateur a le droit de gagner. La formule est simple : revenus autorisés = valeur des actifs reconnue par le régulateur × un taux de rendement qu'il fixe, plus les amortissements et les charges.</p>
+          <p>Trois conséquences. Le prix de l'électricité n'a presque aucun effet sur les revenus d'un réseau, ce qui compte est le taux fixé par le régulateur. Pour gagner plus, il faut agrandir le parc d'actifs, donc investir : l'investissement n'est pas une dépense qui détruit de la valeur, c'est le moteur de croissance des bénéfices. Et le risque principal n'est pas commercial, il est politique.</p>
+          <p>Pourquoi un multiple plutôt qu'un calcul de flux : si l'on actualise les revenus d'un réseau exactement au taux que le régulateur lui autorise, on retombe par construction sur la valeur des actifs, soit 1,00x. Le calcul de flux ne peut donc pas expliquer pourquoi le marché paie 1,40x. Le multiple, lui, le mesure directement.</p>
+          <p>Ce que signifie payer au-dessus de 1,00x : l'acheteur pense faire mieux que le rendement autorisé grâce à des économies, ou il parie sur la croissance future du parc d'actifs, ou il attend des synergies avec un réseau qu'il détient déjà. Sur Electricity North West, Iberdrola possédait déjà les deux réseaux voisins en Écosse.</p>
+          <p>Limite : le multiple de 1,45x vient d'un réseau de distribution britannique. L'appliquer à l'ensemble des réseaux d'Iberdrola, qui couvrent quatre pays aux régulations différentes, est une approximation assumée.</p>
+        </div>
+      </details>
+    </div>
+
+    <!-- COMPARABLES -->
+    <div class="tabpane" id="t-comp">
+      <p class="prose">Le principe : regarder à quel prix le marché valorise les concurrents d'Iberdrola, puis appliquer les mêmes ratios à ses propres résultats. Tous les chiffres sont arrêtés à la même date, le 31 décembre 2025, et la valeur d'entreprise est calculée de la même façon pour chacun : capitalisation boursière plus dette nette.</p>
+
+      <div class="tscroll">
+      <table>
+        <thead><tr><th>Au 31.12.2025, M€</th><th>Cours</th><th>Capitalisation</th><th>Dette nette</th><th>EV</th><th>Sales</th><th>EBITDA</th><th>Résultat net</th><th>EV/EBITDA</th><th>P/E</th><th>EV/Sales</th></tr></thead>
+        <tbody>
+          <tr><td>Enel</td><td>8,877 €</td><td>89 064</td><td>57 182</td><td>146 246</td><td>80 400</td><td>22 874</td><td>4 261</td><td>6,39x</td><td>20,9x</td><td>1,82x</td></tr>
+          <tr><td>Engie</td><td>22,41 €</td><td>54 363</td><td>38 902</td><td>93 265</td><td>71 940</td><td>14 700</td><td>3 827</td><td>6,34x</td><td>14,2x</td><td>1,30x</td></tr>
+          <tr><td>RWE</td><td>45,26 €</td><td>32 298</td><td>10 900</td><td>43 198</td><td>n.d.</td><td>5 113</td><td>1 800</td><td>8,45x</td><td>17,9x</td><td>n.d.</td></tr>
+          <tr class="tot"><td>Médiane des pairs</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>6,39x</td><td>17,9x</td><td>1,56x</td></tr>
+          <tr><td>Moyenne des pairs</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>7,06x</td><td>17,7x</td><td>1,56x</td></tr>
+          <tr class="tot"><td>Iberdrola</td><td>18,46 €</td><td>121 688</td><td>50 182</td><td>171 870</td><td>45 547</td><td>16 592</td><td>6 285</td><td>10,36x</td><td>19,4x</td><td>3,77x</td></tr>
+          <tr><td>Prime payée sur Iberdrola</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="neg">+62 %</td><td class="neg">+8 %</td><td class="neg">+142 %</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <div class="key">
+        <strong>Les trois multiples.</strong> <strong>EV/EBITDA</strong> rapporte la valeur d'entreprise (capitalisation plus dette nette) au bénéfice d'exploitation : c'est ce que coûte l'entreprise entière par euro qu'elle dégage avant amortissements, intérêts et impôts. <strong>P/E</strong> rapporte le cours au bénéfice net par action : ce que coûte un euro de profit revenant à l'actionnaire. <strong>EV/Sales</strong> rapporte la valeur d'entreprise au chiffre d'affaires.
+      </div>
+
+      <div class="note">
+        <strong>Pourquoi l'EV/Sales n'est pas retenu ici.</strong> Dans ce secteur, le chiffre d'affaires inclut l'énergie achetée pour être revendue, notamment via le négoce. Il mesure donc des volumes d'échange, pas la taille de l'activité. Iberdrola affiche 45,5 Md€ de ventes pour 16,6 Md€ de bénéfice d'exploitation, soit une marge de 36 %, quand Engie affiche 71,9 Md€ pour 14,7 Md€, soit 20 %. Appliquer le multiple médian du panel donnerait 3,17 € par action, un chiffre absurde qui ne dit rien d'autre que « Iberdrola fait moins de négoce que ses concurrents ». Le chiffre d'affaires de RWE n'a par ailleurs pas pu être sourcé proprement.
+      </div>
+
+      <h3 style="margin-top:30px">Ce que ça donne</h3>
+      <div class="tscroll">
+      <table>
+        <thead><tr><th>Multiple appliqué à Iberdrola</th><th>Multiple</th><th>Valeur par action</th><th>Écart au cours</th></tr></thead>
+        <tbody>
+          <tr><td>EV/EBITDA, médiane du panel</td><td>6,39x</td><td>8,48 €</td><td class="neg">−54,1 %</td></tr>
+          <tr><td>EV/EBITDA, moyenne du panel</td><td>7,06x</td><td>10,17 €</td><td class="neg">−44,9 %</td></tr>
+          <tr><td>P/E, moyenne du panel</td><td>17,7x</td><td>16,86 €</td><td class="neg">−8,7 %</td></tr>
+          <tr><td>P/E, médiane du panel</td><td>17,9x</td><td>17,11 €</td><td class="neg">−7,3 %</td></tr>
+          <tr class="tot"><td>Fourchette retenue</td><td></td><td>8,48 – 17,11 €</td><td></td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h3 style="margin-top:30px">Pourquoi l'EV/EBITDA et le P/E divergent autant</h3>
+      <p class="prose">Un fait mesurable explique l'écart : Iberdrola transforme une part bien plus élevée de son bénéfice d'exploitation en bénéfice net que ses concurrents. Elle supporte moins d'amortissements et moins de charges financières par euro gagné. L'EV/EBITDA s'arrête avant ces postes et ne voit donc pas cet avantage ; le P/E, calculé sur le bénéfice net, le voit entièrement.</p>
+      <div class="panel"><div class="chart sm"><canvas id="conv"></canvas></div></div>
+
+      <div class="note">
+        <strong>Deux réserves à connaître.</strong> Le bénéfice net de RWE retenu ici est son résultat ajusté, alors que ceux d'Enel et d'Engie sont les résultats publiés : son P/E n'est donc pas strictement comparable. Et E.ON a été écartée du panel : son cours de clôture est connu, 16,125 € au 30 décembre 2025, mais ni son nombre d'actions ni sa dette nette de fin 2025 n'ont pu être trouvés en source primaire. Les estimer aurait faussé la médiane.
+      </div>
+
+      <h3 style="margin-top:32px">Le titre a été fortement réévalué en 2025</h3>
+      <div class="panel"><div class="chart"><canvas id="mult"></canvas></div></div>
+      <p class="prose">Le cours passe de 13,30 € fin 2024 à 18,46 € fin 2025, soit une hausse de 38,8 % en un an. Les bénéfices n'ont pas progressé autant : c'est donc une réévaluation du titre par le marché, et non une amélioration équivalente des résultats.</p>
+
+      <details class="why">
+        <summary>EV/EBITDA ou P/E : lequel croire</summary>
+        <div class="prose">
+          <p>L'EV/EBITDA est le multiple le plus utilisé en fusions-acquisitions, parce qu'il mesure ce que coûte l'entreprise entière, dettes comprises, rapporté à ce qu'elle génère avant amortissements, intérêts et impôts. Un acheteur reprend la dette, donc c'est la bonne mesure pour lui.</p>
+          <p>Son défaut ici : le bénéfice d'exploitation est comptabilisé à 100 % alors qu'une partie des filiales appartient à d'autres actionnaires. Chez Iberdrola ces actionnaires minoritaires détiennent l'équivalent de 13,4 Md€, chez Enel 12,4 Md€. Les fournisseurs de données ne les intègrent pas, si bien que le numérateur et le dénominateur ne couvrent pas le même périmètre. Le biais est identique pour toutes les sociétés du panel, ce qui rend la comparaison valable même si le niveau absolu est approximatif.</p>
+          <p>Le P/E n'a pas ce problème : la valeur boursière ne porte que sur les actions d'Iberdrola, et le bénéfice retenu est déjà net de la part des minoritaires. Son propre défaut est d'être très sensible aux résultats exceptionnels d'une année. Enel en donne l'exemple : son bénéfice 2025 de 4 261 M€ est nettement inférieur aux 7 016 M€ de 2024, ce qui gonfle mécaniquement son ratio.</p>
+          <p>Aucun des deux ne l'emporte. C'est pourquoi la fourchette retenue va de l'un à l'autre, de 8,48 € à 17,11 €, et non pas à une valeur unique.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ETATS FINANCIERS ============ -->
+<div class="page" id="etats">
+  <div class="wrap">
+    <h2>États financiers</h2>
+    <p class="lead">Cinq exercices, 2021 à 2025. L'exercice 2024 est retraité de la sortie du Mexique, seule version comparable à 2025.</p>
+
+    <div class="grid2">
+      <div class="panel"><h3>Bénéfice d'exploitation et marge</h3><div class="chart sm"><canvas id="c1"></canvas></div></div>
+      <div class="panel"><h3>Bénéfice par métier</h3><div class="chart sm"><canvas id="c2"></canvas></div></div>
+    </div>
+    <div class="grid2">
+      <div class="panel"><h3>Bénéfice 2025 par pays</h3><div class="chart sm"><canvas id="c3"></canvas></div></div>
+      <div class="panel"><h3>Argent généré, investi, et ce qu'il reste</h3><div class="chart sm"><canvas id="c4"></canvas></div></div>
+    </div>
+    <div class="grid2">
+      <div class="panel"><h3>Dette nette et niveau d'endettement</h3><div class="chart sm"><canvas id="c5"></canvas></div></div>
+      <div class="panel"><h3>Dividende versé par action</h3><div class="chart sm"><canvas id="c6"></canvas></div></div>
+    </div>
+
+    <div class="key" style="margin-top:26px">
+      Le graphique le plus important est celui de l'argent généré et investi : sur 15 956 M€ de bénéfice d'exploitation en 2025, les investissements en absorbent 9 971 M€ et il ne reste que 1 664 M€ réellement disponibles. C'est le profil normal d'une entreprise d'infrastructure en croissance, et c'est aussi la raison pour laquelle la méthode des flux futurs est fragile sur ce dossier.
+    </div>
+
+    <h3 style="margin-top:34px">Comptes détaillés</h3>
+
+    <div class="acc">
+      <button class="acc-h">Compte de résultat <span class="chev">›</span></button>
+      <div class="acc-b"><div class="tscroll">
+        <table>
+          <thead><tr><th>M€</th><th>2021</th><th>2022</th><th>2023</th><th>2024 ret.</th><th>2025</th></tr></thead>
+          <tbody>
+            <tr><td>Chiffre d'affaires</td><td>39 114</td><td>53 949</td><td>49 335</td><td>42 988</td><td>44 076</td></tr>
+            <tr><td>Achats d'énergie et approvisionnements</td><td>(22 052)</td><td>(33 750)</td><td>(26 033)</td><td>(19 777)</td><td>(20 028)</td></tr>
+            <tr><td>Marge brute</td><td>17 062</td><td>20 199</td><td>23 302</td><td>23 211</td><td>24 048</td></tr>
+            <tr><td>Charges d'exploitation nettes</td><td>(4 227)</td><td>(5 209)</td><td>(6 136)</td><td>(6 010)</td><td>(5 327)</td></tr>
+            <tr><td>Taxes diverses</td><td>(829)</td><td>(1 762)</td><td>(2 749)</td><td>(2 559)</td><td>(2 765)</td></tr>
+            <tr class="tot"><td>Bénéfice d'exploitation</td><td>12 006</td><td>13 228</td><td>14 417</td><td>14 642</td><td>15 956</td></tr>
+            <tr><td>Amortissements et dépréciations</td><td>(4 663)</td><td>(5 244)</td><td>(5 444)</td><td>(7 003)</td><td>(6 201)</td></tr>
+            <tr class="tot"><td>Résultat d'exploitation</td><td>7 343</td><td>7 984</td><td>8 973</td><td>7 639</td><td>9 755</td></tr>
+            <tr><td>Charges financières nettes</td><td>(1 003)</td><td>(1 838)</td><td>(2 187)</td><td>(1 790)</td><td>(1 754)</td></tr>
+            <tr><td>Impôt sur les sociétés</td><td>(1 914)</td><td>(1 161)</td><td>(1 610)</td><td>(1 343)</td><td>(1 671)</td></tr>
+            <tr><td>Activités cédées</td><td>(35)</td><td>(71)</td><td>(21)</td><td>1 479</td><td>364</td></tr>
+            <tr><td>Part des actionnaires minoritaires</td><td>(467)</td><td>(721)</td><td>(591)</td><td>(336)</td><td>(505)</td></tr>
+            <tr class="tot"><td>Bénéfice net</td><td>3 885</td><td>4 339</td><td>4 803</td><td>5 612</td><td>6 285</td></tr>
+            <tr><td>Marge d'exploitation</td><td>30,7 %</td><td>24,5 %</td><td>29,2 %</td><td>34,1 %</td><td>36,2 %</td></tr>
+          </tbody>
+        </table>
+      </div></div>
+    </div>
+
+    <div class="acc">
+      <button class="acc-h">Bilan <span class="chev">›</span></button>
+      <div class="acc-b"><div class="tscroll">
+        <table>
+          <thead><tr><th>M€</th><th>2021</th><th>2022 ret.</th><th>2023</th><th>2024</th><th>2025</th></tr></thead>
+          <tbody>
+            <tr><td>Centrales, réseaux et équipements</td><td>79 981</td><td>86 326</td><td>87 821</td><td>94 461</td><td>93 842</td></tr>
+            <tr><td>dont chantiers en cours</td><td>9 062</td><td>11 513</td><td>14 355</td><td>15 106</td><td>13 397</td></tr>
+            <tr><td>Actifs incorporels</td><td>19 909</td><td>20 118</td><td>20 255</td><td>20 255</td><td>22 240</td></tr>
+            <tr><td>Trésorerie</td><td>4 033</td><td>4 608</td><td>3 019</td><td>4 082</td><td>3 670</td></tr>
+            <tr class="tot"><td>Total de l'actif</td><td>141 752</td><td>150 114</td><td>150 033</td><td>158 293</td><td>160 762</td></tr>
+            <tr><td>Capitaux des actionnaires d'Iberdrola</td><td>40 479</td><td>41 119</td><td>43 111</td><td>47 125</td><td>50 068</td></tr>
+            <tr><td>Capitaux des actionnaires minoritaires</td><td>15 647</td><td>16 995</td><td>17 181</td><td>13 926</td><td>13 351</td></tr>
+            <tr class="tot"><td>Total des capitaux propres</td><td>56 126</td><td>58 114</td><td>60 292</td><td>61 051</td><td>63 419</td></tr>
+            <tr><td>Part des minoritaires</td><td>27,9 %</td><td>29,2 %</td><td>28,5 %</td><td>22,8 %</td><td>21,1 %</td></tr>
+            <tr><td>Effet des variations de change</td><td>(2 779)</td><td>(2 143)</td><td>(2 691)</td><td>(919)</td><td>(5 700)</td></tr>
+          </tbody>
+        </table>
+      </div></div>
+    </div>
+
+    <div class="acc">
+      <button class="acc-h">Flux de trésorerie <span class="chev">›</span></button>
+      <div class="acc-b"><div class="tscroll">
+        <table>
+          <thead><tr><th>M€</th><th>2021</th><th>2022</th><th>2023</th><th>2024</th><th>2025</th></tr></thead>
+          <tbody>
+            <tr class="tot"><td>Argent généré par l'activité</td><td>8 106</td><td>10 443</td><td>12 130</td><td>11 925</td><td>11 635</td></tr>
+            <tr><td>Investissements</td><td>7 779</td><td>7 823</td><td>9 121</td><td>9 866</td><td>9 971</td></tr>
+            <tr class="tot"><td>Argent restant disponible</td><td>327</td><td>2 620</td><td>3 009</td><td>2 059</td><td>1 664</td></tr>
+            <tr><td>Investissements / bénéfice d'exploitation</td><td>64,8 %</td><td>59,1 %</td><td>63,3 %</td><td>67,4 %</td><td>62,5 %</td></tr>
+            <tr><td>Dette nette</td><td>35 802</td><td>40 267</td><td>46 065</td><td>51 428</td><td>51 029</td></tr>
+            <tr><td>Dette nette / bénéfice d'exploitation</td><td>2,98x</td><td>3,04x</td><td>3,20x</td><td>3,05x</td><td>3,20x</td></tr>
+          </tbody>
+        </table>
+      </div></div>
+    </div>
+
+    <div class="note" style="margin-top:24px">
+      <strong>Trois retraitements à connaître.</strong> Le Mexique a été classé en activité cédée dans les comptes 2025, ce qui a fait retraiter tout l'exercice 2024 : le bénéfice d'exploitation publié de 16 848 M€ devient 14 642 M€. Le bilan 2022 a été retraité dans le rapport 2023, le total de l'actif passant de 154 667 à 150 114 M€. Enfin, le découpage par métier a changé en 2022, ce qui rend 2021 non comparable à ce niveau.
+    </div>
+  </div>
+</div>
+
+<!-- ============ SOCIETE ============ -->
+<div class="page" id="societe">
+  <div class="wrap">
+    <h2>Iberdrola, S.A.</h2>
+    <p class="lead">Fondée en 1840, siège à Bilbao, cotée à la Bourse de Madrid et éligible au PEA. Plus de 44 GW de capacité renouvelable installée fin 2025, auxquels s'ajoutent des capacités nucléaires et thermiques. Présente en Espagne, au Royaume-Uni, aux États-Unis, au Brésil et dans plusieurs autres pays.</p>
+
+    <section>
+      <h3>Trois métiers, et un basculement</h3>
+      <div class="prose">
+        <p>Iberdrola fait trois choses. Elle <strong>transporte et distribue</strong> l'électricité à travers des réseaux dont les tarifs sont fixés par des régulateurs publics. Elle <strong>produit</strong> de l'électricité, essentiellement renouvelable. Et elle la <strong>vend</strong> aux clients finaux.</p>
+        <p>Le centre de gravité a changé. Les réseaux génèrent aujourd'hui 54 % du résultat d'exploitation, contre 52 % en 2022, et absorbent la moitié des investissements. L'objectif affiché est 55 % du bénéfice en 2028. Iberdrola n'est plus un producteur d'énergie verte doté de réseaux : c'est un gestionnaire de réseaux doté d'une activité de production.</p>
+        <p>Géographiquement, l'Espagne pèse 36 % du chiffre d'affaires, le Brésil 20 %, les États-Unis 19 %, le Royaume-Uni 16 %. Mais si l'on regarde les seuls réseaux régulés, le Royaume-Uni et les États-Unis en représentent à eux deux les deux tiers.</p>
+      </div>
+    </section>
+
+    <section>
+      <h3>Quel métier rapporte le plus ?</h3>
+      <p class="lead">Deux chiffres suffisent à comprendre la stratégie du groupe : combien d'argent est immobilisé dans chaque métier, et combien ce métier rapporte par euro immobilisé.</p>
+      <div class="tscroll">
+      <table>
+        <thead><tr><th>2025</th><th>Argent immobilisé</th><th>Rapporté chaque année</th><th class="txt">Lecture</th></tr></thead>
+        <tbody>
+          <tr><td>Réseaux électriques</td><td>52 130 M€</td><td>10,7 %</td><td class="txt">100 € investis rapportent 10,70 € par an</td></tr>
+          <tr><td>Renouvelables et production</td><td>38 332 M€</td><td>7,3 %</td><td class="txt">100 € investis rapportent 7,30 € par an</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="key">
+        L'écart est de trois points et demi, sur des montants de plusieurs dizaines de milliards. C'est ce qui explique, mieux que n'importe quel communiqué, pourquoi Iberdrola oriente désormais la moitié de ses investissements vers les réseaux. C'est aussi un point d'interrogation sur les renouvelables : 38 Md€ immobilisés pour 7,3 % de rendement, c'est probablement en dessous de ce que coûte l'argent à la société une fois le risque de ces actifs pris en compte.
+      </div>
+    </section>
+
+    <section>
+      <h3>La stratégie annoncée</h3>
+      <div class="prose">
+        <p>Le plan 2025-2028 prévoit 58 Md€ d'investissements, dont environ 37 Md€ dans les réseaux, et 70 % de ces investissements réseaux dirigés vers le Royaume-Uni et les États-Unis. L'objectif est un bénéfice d'exploitation de 18 000 M€ en 2028, avec près de 75 % des revenus provenant d'activités régulées ou sous contrat de long terme.</p>
+        <p>Les opérations récentes suivent la même logique. Rachat d'Electricity North West au Royaume-Uni en août 2024, ce qui fait du Royaume-Uni le premier marché du groupe en actifs régulés. Cession du Mexique, d'abord 55 % des activités pour environ 6,2 Md$ en février 2024, puis treize centrales thermiques en 2026. Et, après notre date de valorisation, le rachat en juillet 2026 de 80 % de Caruna, premier distributeur d'électricité finlandais, pour environ 5 Md€.</p>
+      </div>
+    </section>
+
+    <section>
+      <h3>Le dividende</h3>
+      <div class="prose">
+        <p>Iberdrola s'engage à reverser entre 65 % et 75 % de son bénéfice, avec un minimum de 0,64 € par action garanti jusqu'en 2028. Le dividende au titre de 2025 est de 0,685 € par action, pour un total distribué de 4,5 Md€, en hausse de 12 %.</p>
+        <p>Une particularité à connaître : une partie des actionnaires choisit de recevoir le dividende en actions plutôt qu'en argent. Cela crée de nouvelles actions chaque année, et dilue donc le bénéfice par action. En 2025, deux émissions au titre de ce dividende, une annulation de 200 millions d'actions, et une augmentation de capital de 331 millions d'actions pour lever 5 Md€.</p>
+      </div>
+    </section>
+
+    <section>
+      <h3>Forces, faiblesses, opportunités, menaces</h3>
+      <div class="swot">
+        <div class="sw f">
+          <h3>Forces</h3>
+          <ul class="tight">
+            <li>Plus de la moitié du bénéfice vient d'activités dont les tarifs sont garantis par des régulateurs publics</li>
+            <li>Le plus grand parc d'actifs régulés d'Europe, 51 Md€, avec un objectif de 70 Md€ en 2028</li>
+            <li>Deux tiers de ce parc au Royaume-Uni et aux États-Unis, les régulations les mieux rémunérées</li>
+            <li>Endettement stable à 3,20 fois le bénéfice depuis cinq ans, malgré des investissements massifs</li>
+            <li>Transforme 37,9 % de son bénéfice d'exploitation en bénéfice net, contre 18,6 % pour Enel et 26,0 % pour Engie</li>
+          </ul>
+        </div>
+        <div class="sw fa">
+          <h3>Faiblesses</h3>
+          <ul class="tight">
+            <li>Les renouvelables rapportent 7,3 % sur 38 Md€ immobilisés, probablement moins que ce que coûte l'argent</li>
+            <li>Dépréciations d'actifs récurrentes : 524 M€ en 2025, 1 532 M€ en 2024</li>
+            <li>Il ne reste que 1,7 Md€ d'argent réellement libre après investissements, sur 16 Md€ de bénéfice</li>
+            <li>21 % des capitaux propres appartiennent à des actionnaires minoritaires, essentiellement au Brésil</li>
+            <li>Une réévaluation boursière de 38,8 % en 2025 qui laisse peu de marge d'erreur</li>
+          </ul>
+        </div>
+        <div class="sw o">
+          <h3>Opportunités</h3>
+          <ul class="tight">
+            <li>La demande d'électricité augmente avec les voitures électriques, les pompes à chaleur et les centres de données</li>
+            <li>Le raccordement au réseau est devenu le goulot d'étranglement du secteur, ce qui renforce la valeur des réseaux</li>
+            <li>Les réseaux de distribution européens font l'objet d'une vague de rachats à prix élevés</li>
+            <li>Les entreprises comparables cotées aux États-Unis se négocient nettement plus cher qu'en Europe</li>
+            <li>Une baisse des taux, si elle se produit, réduirait mécaniquement le coût de sa dette</li>
+          </ul>
+        </div>
+        <div class="sw m">
+          <h3>Menaces</h3>
+          <ul class="tight">
+            <li>Le taux de l'emprunt d'État allemand est passé de 2,7 % à 3,51 % en un an, sur 51 Md€ de dette nette</li>
+            <li>Les régulateurs de quatre pays peuvent à tout moment baisser le rendement autorisé</li>
+            <li>En Espagne, ni les tarifs ni la valeur des actifs ne sont indexés sur l'inflation</li>
+            <li>La baisse du dollar a coûté 4 781 M€ de capitaux propres en 2025</li>
+            <li>58 Md€ à dépenser en quatre ans sans dégrader la note de crédit</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- ============ SECTEUR ============ -->
+<div class="page" id="secteur">
+  <div class="wrap">
+    <h2>Le secteur de l'électricité européen</h2>
+    <p class="lead">Les entreprises qui produisent, transportent, distribuent et vendent de l'électricité. Ce périmètre détermine à qui Iberdrola est comparée, donc une bonne partie du résultat de la valorisation.</p>
+
+    <section>
+      <h3>Quatre métiers, quatre économies différentes</h3>
+      <div class="prose">
+        <p>La <strong>production</strong> vend son électricité au prix du marché : elle est cyclique, très gourmande en capital, et risquée. Le <strong>transport</strong> et la <strong>distribution</strong> sont des monopoles dont les tarifs sont fixés par un régulateur : revenus prévisibles, risque politique. La <strong>vente aux clients</strong> demande peu de capital mais dégage peu de marge.</p>
+        <p>Conséquence directe : deux entreprises du même secteur, avec le même chiffre d'affaires, ne valent pas la même chose si l'une tire 60 % de ses revenus du régulé et l'autre 30 %. C'est ce qu'on observe dans le panel : Enel et Engie se négocient autour de 6,4 fois leur bénéfice d'exploitation, RWE 8,5 fois, et Iberdrola 10,4 fois.</p>
+      </div>
+    </section>
+
+    <section>
+      <h3>Comment gagne-t-on de l'argent avec un réseau</h3>
+      <div class="prose">
+        <p>Personne ne construit deux réseaux électriques concurrents dans la même rue. C'est donc un monopole, et un régulateur public fixe combien l'opérateur a le droit de gagner : la valeur de ses actifs multipliée par un taux de rendement autorisé, plus ses amortissements et ses charges.</p>
+        <p>Trois conséquences contre-intuitives. Le prix de l'électricité n'a presque aucun effet sur les revenus d'un réseau. Pour gagner plus, il faut agrandir son parc d'actifs, donc investir : l'investissement est le moteur de croissance des bénéfices, à l'inverse d'une entreprise industrielle classique. Et le risque principal n'est pas commercial, il est politique.</p>
+      </div>
+      <div class="tscroll">
+      <table>
+        <thead><tr><th>Décisions réglementaires récentes</th><th>Rendement autorisé</th></tr></thead>
+        <tbody>
+          <tr><td>Espagne, distribution, période 2026-2031</td><td>6,58 % avant impôt</td></tr>
+          <tr><td>Royaume-Uni, transport</td><td>5,67 %</td></tr>
+          <tr><td>Portugal et Espagne, décembre 2025</td><td>Rendements relevés selon EDP</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="note">
+        <strong>Un point qui compte pour la valorisation.</strong> En Espagne, ni la rémunération ni la valeur des actifs ne sont actuellement revalorisées de l'inflation. Cela affaiblit l'argument habituellement avancé pour justifier une croissance de long terme de 2 %.
+      </div>
+    </section>
+
+    <section>
+      <h3>Ce qui fait croître la demande</h3>
+      <div class="prose">
+        <p><strong>L'électrification des usages.</strong> Voitures électriques, pompes à chaleur, industrie. La demande d'électricité augmente alors que la demande totale d'énergie stagne.</p>
+        <p><strong>Les centres de données.</strong> E.ON a signé un accord avec CyrusOne pour alimenter jusqu'à 61 MW près de Francfort. RWE a revendu un projet britannique à un grand acteur du cloud, avec un gain de 225 M€. EDP cite cette demande comme moteur de ses résultats jusqu'en 2028.</p>
+        <p>Le point à retenir : ce qui manque n'est pas la capacité de production, c'est le raccordement. Endesa a dû refuser une part significative des demandes de connexion reçues en 2025 faute de capacité sur son réseau.</p>
+      </div>
+    </section>
+
+    <section>
+      <h3>Où en est le cycle</h3>
+      <div class="prose">
+        <p>Le secteur sort d'une séquence brutale : flambée des prix de l'énergie en 2022, normalisation en 2023 et 2024, et remontée des taux d'intérêt sur toute la période. Le vent contraire principal aujourd'hui est le niveau des taux : l'emprunt d'État allemand à 10 ans est passé d'environ 2,7 % à 3,51 % en un an, sur un secteur endetté entre 2 et 3 fois son bénéfice.</p>
+        <p>La réponse est la même partout. Basculer vers le régulé : Iberdrola vise 55 % de bénéfice réseaux en 2028, E.ON annonce 80 % de résultats régulés ou sous contrat, Endesa 85 %. Vendre des parts minoritaires dans ses parcs pour financer la croissance sans alourdir le bilan, pratiqué par Iberdrola, EDPR, RWE et Endesa. Et racheter des réseaux, thème dominant des fusions-acquisitions du secteur.</p>
+        <p>Le marché coté s'appauvrit : Neoen rachetée par Brookfield, Encavis et Albioma par KKR, EDF renationalisée. Les fonds d'infrastructure sortent ces actifs de la bourse parce qu'ils estiment que le marché actions les sous-valorise.</p>
+      </div>
+    </section>
+
+    <section>
+      <h3>Les indicateurs propres au secteur</h3>
+      <div class="tscroll">
+      <table>
+        <thead><tr><th>Indicateur</th><th class="txt">Ce qu'il mesure</th><th>Repère observé</th></tr></thead>
+        <tbody>
+          <tr><td>Valeur rapportée aux actifs régulés</td><td class="txt">Ce qu'un acheteur paie par rapport à la valeur reconnue par le régulateur</td><td>1,45x sur Electricity North West</td></tr>
+          <tr><td>Valeur par mégawatt installé</td><td class="txt">Ce qu'un acheteur paie par unité de capacité de production</td><td>1,56 M€/MW sur Neoen</td></tr>
+          <tr><td>Dette nette rapportée au bénéfice</td><td class="txt">La capacité à rembourser, et la note de crédit</td><td>de 2,13x à 3,02x dans le panel</td></tr>
+          <tr><td>Conversion du bénéfice d'exploitation en bénéfice net</td><td class="txt">Ce qui reste après amortissements, intérêts et impôts</td><td>de 18,6 % à 37,9 % dans le panel</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p class="prose" style="margin-top:1rem">Les ratios classiques de valorisation ne suffisent pas ici, parce qu'ils ne disent rien de la part de revenus régulés, qui est la variable expliquant l'essentiel des écarts de prix entre ces sociétés.</p>
+    </section>
+
+    <section>
+      <h3>Une observation qui dépasse le cadre européen</h3>
+      <div class="prose">
+        <p>Les entreprises du même secteur cotées aux États-Unis se négocient nettement plus cher que leurs homologues européennes, de l'ordre de 40 à 50 % d'écart sur les principaux ratios. Trois explications sont avancées : une régulation jugée plus prévisible et mieux rémunérée, une croissance de la demande plus forte tirée par les centres de données, et une base d'investisseurs plus profonde sur les infrastructures cotées.</p>
+        <p>Cette observation n'entre pas dans la valorisation retenue, qui compare Iberdrola à ses pairs européens sur des chiffres arrêtés au 31 décembre 2025. Mais elle éclaire la prime qu'Iberdrola paie sur ce panel : avec deux tiers de ses actifs régulés au Royaume-Uni et aux États-Unis, elle se situe déjà à mi-chemin entre les deux marchés.</p>
+      </div>
+    </section>
+  </div>
+</div>
+
+<footer><div class="wrap">
+  <p>Valorisation au 31 décembre 2025, hors activités cédées. Sources : rapports financiers annuels d'Iberdrola 2021 à 2025, comptes annuels et communiqués de résultats d'Enel, Engie et RWE, Damodaran (NYU Stern) pour les primes de risque et les bêtas sectoriels, Zonebourse pour les données de marché.</p>
+  <p>Travail d'analyse à but pédagogique. Ne constitue ni un conseil en investissement ni une recommandation d'achat ou de vente.</p>
+  <div class="sig">JULIE GENTIL</div>
+</div></footer>
+
+<script>
+var INK='#10231D',GREEN='#00A65A',TEAL='#14594A',SAND='#E4E0D4',AMBER='#B8781A',SOFT='#3B554C';
+Chart.defaults.font.family="'IBM Plex Sans',sans-serif";
+Chart.defaults.font.size=12;
+Chart.defaults.color=SOFT;
+function eur(v){return v.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})+' \u20AC'}
+function md(v){return v.toLocaleString('fr-FR')}
+
+function refresh(){
+  requestAnimationFrame(function(){
+    document.querySelectorAll('canvas').forEach(function(cv){
+      var ch=Chart.getChart(cv); if(ch){try{ch.resize()}catch(e){}}
+    });
+  });
+}
+document.querySelectorAll('.navtab').forEach(function(b){b.addEventListener('click',function(){
+  document.querySelectorAll('.navtab').forEach(function(x){x.classList.remove('on')});
+  document.querySelectorAll('.page').forEach(function(x){x.classList.remove('on')});
+  b.classList.add('on');
+  document.getElementById(b.dataset.p).classList.add('on');
+  window.scrollTo({top:0,behavior:'instant'});
+  refresh();
+})});
+document.querySelectorAll('.tab').forEach(function(b){b.addEventListener('click',function(){
+  var par=b.closest('.wrap');
+  par.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on')});
+  par.querySelectorAll('.tabpane').forEach(function(x){x.classList.remove('on')});
+  b.classList.add('on');
+  document.getElementById(b.dataset.t).classList.add('on');
+  refresh();
+})});
+document.querySelectorAll('.acc-h').forEach(function(b){b.addEventListener('click',function(){
+  b.parentElement.classList.toggle('open')})});
+
+var COURS=18.46, MOY=16.27;
+new Chart(document.getElementById('ff'),{
+  type:'bar',
+  data:{labels:['Flux futurs (DCF)','Somme des parties','Comparables boursiers'],
+    datasets:[{data:[[16.91,20.03],[16.28,18.79],[8.48,17.11]],
+      backgroundColor:[GREEN,TEAL,'#8FAFA2'],borderWidth:0,barPercentage:.5}]},
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    layout:{padding:{top:40}},
+    scales:{x:{min:7,max:22,grid:{color:SAND},ticks:{callback:function(v){return v+' \u20AC'}},
+      title:{display:true,text:"Valeur estimee par action"}},y:{grid:{display:false}}},
+    plugins:{legend:{display:false},
+      tooltip:{callbacks:{label:function(c){return eur(c.raw[0])+' a '+eur(c.raw[1])}}}}},
+  plugins:[{id:'l',afterDraw:function(c){
+    var a=c.chartArea,g=c.ctx;
+    var x1=c.scales.x.getPixelForValue(COURS), x2=c.scales.x.getPixelForValue(MOY);
+    g.save();
+    g.strokeStyle=GREEN;g.lineWidth=2;g.setLineDash([3,3]);
+    g.beginPath();g.moveTo(x2,a.top);g.lineTo(x2,a.bottom);g.stroke();
+    g.strokeStyle=INK;g.setLineDash([5,4]);
+    g.beginPath();g.moveTo(x1,a.top);g.lineTo(x1,a.bottom);g.stroke();
+    g.setLineDash([]);
+    g.font="600 11px 'IBM Plex Sans'";g.textAlign='center';
+    g.fillStyle=INK;g.fillText('Cours 18,46 \u20AC',x1,a.top-10);
+    g.fillStyle=TEAL;g.fillText('Moyenne 16,27 \u20AC',x2,a.top-26);
+    g.restore();}}]
+});
+
+new Chart(document.getElementById('dcfc'),{
+  type:'bar',
+  data:{labels:['2026','2027','2028','2029','Tout ce qui suit 2029'],
+    datasets:[{label:'Contribution a la valeur',data:[2424,2778,3120,6368,170116],
+      backgroundColor:[TEAL,TEAL,TEAL,GREEN,AMBER]}]},
+  options:{responsive:true,maintainAspectRatio:false,
+    scales:{y:{type:'logarithmic',grid:{color:SAND},ticks:{callback:function(v){return md(v)}}},x:{grid:{display:false}}},
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return md(c.parsed.y)+' M\u20AC'}}}}}
+});
+
+(function(){
+  var gs=[1.50,1.75,2.00,2.25,2.50];
+  var ws=[5.00,5.25,5.50,5.75,5.83,6.00,6.25,6.50,6.75,7.00];
+  var m=[[21.40,23.70,26.38,29.55,33.35],[19.20,21.18,23.46,26.13,29.27],
+    [17.28,19.00,20.97,23.23,25.88],[15.59,17.10,18.80,20.75,23.00],
+    [15.09,16.53,18.17,20.03,22.17],[14.09,15.41,16.91,18.60,20.54],
+    [12.74,13.92,15.24,16.72,18.41],[11.53,12.58,13.76,15.07,16.54],
+    [10.44,11.38,12.43,13.59,14.90],[9.44,10.30,11.24,12.28,13.43]];
+  var lo=99,hi=0;
+  m.forEach(function(r){r.forEach(function(v){lo=Math.min(lo,v);hi=Math.max(hi,v)})});
+  var h='<table class="heat"><thead><tr><th>Cout du capital / Croissance</th>';
+  gs.forEach(function(g){h+='<th>'+g.toFixed(2).replace('.',',')+' %</th>'});
+  h+='</tr></thead><tbody>';
+  m.forEach(function(row,i){
+    h+='<tr><td class="rowh">'+ws[i].toFixed(2).replace('.',',')+' %</td>';
+    row.forEach(function(v,j){
+      var t=(v-lo)/(hi-lo);
+      var mid=(i===4&&j===2)?'mid':'';
+      h+='<td class="'+mid+'" style="background:rgba(0,166,90,'+(0.08+t*0.5).toFixed(3)+')">'+v.toFixed(2).replace('.',',')+' \u20AC</td>';
+    });
+    h+='</tr>';
+  });
+  document.getElementById('heat').innerHTML=h+'</tbody></table>';
+})();
+
+new Chart(document.getElementById('conv'),{
+  type:'bar',
+  data:{labels:['Iberdrola','RWE','Engie','Enel'],
+    datasets:[{label:'Part du benefice d\u2019exploitation qui devient benefice net',
+      data:[37.9,35.2,26.0,18.6],backgroundColor:[GREEN,TEAL,'#8FAFA2','#BFD4CB']}]},
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    scales:{x:{grid:{color:SAND},ticks:{callback:function(v){return v+' %'}},max:45},y:{grid:{display:false}}},
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.parsed.x.toFixed(1).replace('.',',')+' %'}}}}}
+});
+
+new Chart(document.getElementById('mult'),{
+  data:{labels:['2021','2022','2023','2024','2025','2026e'],
+    datasets:[
+      {type:'bar',label:'Cours de l\u2019action',data:[10.41,10.93,11.87,13.30,18.46,20.16],
+        backgroundColor:['#8FAFA2','#8FAFA2','#8FAFA2','#8FAFA2',GREEN,'#BFD4CB'],yAxisID:'y',order:3},
+      {type:'line',label:'EV/EBITDA',data:[8.65,8.52,8.46,7.21,10.4,11.3],
+        borderColor:TEAL,backgroundColor:TEAL,tension:.25,yAxisID:'y2',order:1},
+      {type:'line',label:'P/E',data:[17.8,16.8,16.5,15.8,20.0,19.9],
+        borderColor:AMBER,backgroundColor:AMBER,borderDash:[5,4],tension:.25,yAxisID:'y2',order:2}
+    ]},
+  options:{responsive:true,maintainAspectRatio:false,
+    scales:{y:{grid:{color:SAND},ticks:{callback:function(v){return v+' \u20AC'}},title:{display:true,text:'Cours'}},
+      y2:{position:'right',grid:{display:false},min:0,max:25,ticks:{callback:function(v){return v+'x'}},title:{display:true,text:'Ratios'}},
+      x:{grid:{display:false}}},
+    plugins:{legend:{position:'bottom'}}}
+});
+
+var Y=['2021','2022','2023','2024','2025'];
+new Chart(document.getElementById('c1'),{
+  data:{labels:Y,datasets:[
+    {type:'bar',label:'Benefice d\u2019exploitation',data:[12006,13228,14417,14642,15956],backgroundColor:TEAL,yAxisID:'y',order:2},
+    {type:'line',label:'Marge',data:[30.7,24.5,29.2,34.1,36.2],borderColor:GREEN,backgroundColor:GREEN,yAxisID:'y2',tension:.25,order:1}]},
+  options:{responsive:true,maintainAspectRatio:false,
+    scales:{y:{grid:{color:SAND},ticks:{callback:function(v){return md(v)}}},
+      y2:{position:'right',grid:{display:false},min:20,max:40,ticks:{callback:function(v){return v+' %'}}},
+      x:{grid:{display:false}}},
+    plugins:{legend:{position:'bottom'}}}
+});
+new Chart(document.getElementById('c2'),{
+  type:'bar',
+  data:{labels:['2022','2023','2024','2025'],datasets:[
+    {label:'Reseaux',data:[6242,5682,6075,7980],backgroundColor:GREEN},
+    {label:'Renouvelables et production',data:[4056,4675,5547,5511],backgroundColor:TEAL},
+    {label:'Vente aux clients',data:[2391,3791,4809,2799],backgroundColor:'#8FAFA2'}]},
+  options:{responsive:true,maintainAspectRatio:false,
+    scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,grid:{color:SAND},ticks:{callback:function(v){return md(v)}}}},
+    plugins:{legend:{position:'bottom'},tooltip:{callbacks:{label:function(c){return c.dataset.label+' : '+md(c.parsed.y)+' M\u20AC'}}}}}
+});
+new Chart(document.getElementById('c3'),{
+  type:'doughnut',
+  data:{labels:['Espagne','Royaume-Uni','Etats-Unis','Bresil','Autres'],
+    datasets:[{data:[5958,3522,2957,2253,781],backgroundColor:[GREEN,TEAL,'#4C8F7A','#8FAFA2',SAND],borderWidth:2,borderColor:'#fff'}]},
+  options:{responsive:true,maintainAspectRatio:false,cutout:'58%',
+    plugins:{legend:{position:'right'},tooltip:{callbacks:{label:function(c){return c.label+' : '+md(c.parsed)+' M\u20AC'}}}}}
+});
+new Chart(document.getElementById('c4'),{
+  type:'bar',
+  data:{labels:Y,datasets:[
+    {label:'Argent genere',data:[8106,10443,12130,11925,11635],backgroundColor:TEAL},
+    {label:'Investissements',data:[7779,7823,9121,9866,9971],backgroundColor:SAND},
+    {label:'Reste disponible',data:[327,2620,3009,2059,1664],backgroundColor:GREEN}]},
+  options:{responsive:true,maintainAspectRatio:false,
+    scales:{y:{grid:{color:SAND},ticks:{callback:function(v){return md(v)}}},x:{grid:{display:false}}},
+    plugins:{legend:{position:'bottom'},tooltip:{callbacks:{label:function(c){return c.dataset.label+' : '+md(c.parsed.y)+' M\u20AC'}}}}}
+});
+new Chart(document.getElementById('c5'),{
+  data:{labels:Y,datasets:[
+    {type:'bar',label:'Dette nette',data:[35802,40267,46065,51428,51029],backgroundColor:TEAL,yAxisID:'y',order:2},
+    {type:'line',label:'Dette / benefice',data:[2.98,3.04,3.20,3.05,3.20],borderColor:AMBER,backgroundColor:AMBER,yAxisID:'y2',tension:.25,order:1}]},
+  options:{responsive:true,maintainAspectRatio:false,
+    scales:{y:{grid:{color:SAND},ticks:{callback:function(v){return md(v)}}},
+      y2:{position:'right',grid:{display:false},min:0,max:5,ticks:{callback:function(v){return v+'x'}}},
+      x:{grid:{display:false}}},
+    plugins:{legend:{position:'bottom'}}}
+});
+new Chart(document.getElementById('c6'),{
+  type:'bar',
+  data:{labels:['2021','2022','2023','2024','2025','2026'],
+    datasets:[{label:'Dividende verse',data:[0.422,0.449,0.501,0.558,0.645,0.685],backgroundColor:GREEN}]},
+  options:{responsive:true,maintainAspectRatio:false,
+    scales:{y:{grid:{color:SAND},ticks:{callback:function(v){return v.toFixed(2).replace('.',',')+' \u20AC'}}},x:{grid:{display:false}}},
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return eur(c.parsed.y)}}}}}
+});
+</script>
+</body>
+</html>
